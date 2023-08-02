@@ -9,6 +9,9 @@ const products = new Schema({
         type: Schema.Types.String,
         required: true,
       },
+      image: {
+        type: Schema.Types.String,
+      },
     },
   },
 });
