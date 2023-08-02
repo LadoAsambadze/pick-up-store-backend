@@ -5,14 +5,8 @@ info:
   version: 0.1.9
 
 paths:
-  /:
+  /main:
     get:
-      parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         "200":
           description: Successfully fetched

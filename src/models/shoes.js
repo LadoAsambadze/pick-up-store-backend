@@ -13,4 +13,4 @@ const shoes = new Schema({
   },
 });
 
-export const shoesData = model("shoes", shoes);
+export const ShoesData = model("shoes", shoes);
