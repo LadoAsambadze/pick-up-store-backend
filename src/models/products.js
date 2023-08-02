@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const shoes = new Schema({
+const products = new Schema({
   model: {
     type: Schema.Types.String,
     required: true,
@@ -13,4 +13,4 @@ const shoes = new Schema({
   },
 });
 
-export const ShoesData = model("shoes", shoes);
+export const productsData = model("products", products);
