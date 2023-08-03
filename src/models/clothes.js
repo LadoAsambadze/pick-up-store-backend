@@ -27,6 +27,10 @@ const clothes = new Schema({
       image: {
         type: Schema.Types.String,
       },
+      new: {
+        type: Schema.Types.Boolean,
+
+      }
     },
   },
 });
