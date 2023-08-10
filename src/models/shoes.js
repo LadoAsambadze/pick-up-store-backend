@@ -13,7 +13,7 @@ const shoes = new Schema({
         type: Schema.Types.String,
       },
       price: {
-        type: Schema.Types.String,
+        type: Schema.Types.Number,
       },
       size: {
         type: Schema.Types.String,
