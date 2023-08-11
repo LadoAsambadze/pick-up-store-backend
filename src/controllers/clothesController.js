@@ -1,12 +1,12 @@
-import { clothesData } from "../models/clothes.js";
+import { productsData } from "../models/products.js";
 
-const clothesInfo = async (req, res) => {
+const productsInfo = async (req, res) => {
   try {
-    const clothes = await clothesData.find();
-    res.status(200).json({ message: "Fetched well", clothes });
+    const products = await productsData.find();
+    res.status(200).json({ message: "Fetched well", products });
   } catch (error) {
     console.log(error, "error its");
   }
 };
 
-export default clothesInfo;
+export default productsInfo;

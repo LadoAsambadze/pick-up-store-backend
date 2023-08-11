@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const clothes = new Schema({
+const products = new Schema({
   model: {
     clothes: {
       type: {
@@ -34,4 +34,4 @@ const clothes = new Schema({
   },
 });
 
-export const clothesData = model("clothes", clothes);
+export const productsData = model("products", products);
