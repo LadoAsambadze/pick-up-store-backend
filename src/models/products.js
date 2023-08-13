@@ -22,6 +22,10 @@ const products = new Schema({
   name: {
     type: Schema.Types.String,
   },
+  new: {
+    type: Schema.Types.Boolean,
+    default: false,
+  },
   images: [
     {
       color: {
