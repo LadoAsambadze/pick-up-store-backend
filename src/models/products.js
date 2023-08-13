@@ -14,7 +14,7 @@ const products = new Schema({
     type: Schema.Types.Number,
   },
   size: {
-    type: [Schema.Types.Number],
+    type: [Schema.Types.String],
   },
   brand: {
     type: Schema.Types.String,
