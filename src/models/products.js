@@ -25,7 +25,7 @@ const products = new Schema({
         type: Schema.Types.String,
       },
       image: {
-        type: Schema.Types.String,
+        type: Schema.Types.Array,
       },
       new: {
         type: Schema.Types.Boolean,
