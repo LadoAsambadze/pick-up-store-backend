@@ -26,10 +26,14 @@ const products = new Schema({
     type: Schema.Types.Boolean,
     default: false,
   },
+
   images: [
     {
       color: {
         type: Schema.Types.String,
+      },
+      quantity: {
+        type: Schema.Types.Number,
       },
       urls: [
         {
