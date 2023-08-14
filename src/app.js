@@ -5,7 +5,6 @@ import cors from "cors";
 import swaggerMiddleware from "./middlewares/swagger-middleware.js";
 import productsInfo from "./controllers/productsController.js";
 
-
 const app = express();
 connect();
 
@@ -14,7 +13,6 @@ app.use(bodyParser.json());
 app.use("/image", express.static("public/storage/images"));
 app.get("/all", productsInfo);
 
-
 app.use("/", swaggerMiddleware());
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
