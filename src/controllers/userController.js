@@ -62,17 +62,17 @@ export const Singup = async (req, res) => {
   }
 };
 
-// export const profile = async (req, res) => {
-//   const { authorization } = req.headers;
+export const profile = async (req, res) => {
+  const { authorization } = req.headers;
 
-//   if (authorization) {
-//     const token = authorization.trim().split(" ")[1];
+  if (authorization) {
+    const token = authorization.trim().split(" ")[1];
 
-//     jwt.verify(token, process.env.SECRET, {}, (error, useData) => {
-//       if (error) throw error;
-//       res.status(200).json(useData);
-//     });
-//   } else {
-//     res.status(403).json("No token!");
-//   }
-// };
+    jwt.verify(token, process.env.SECRET, {}, (error, useData) => {
+      if (error) throw error;
+      res.status(200).json(useData);
+    });
+  } else {
+    res.status(403).json("No token!");
+  }
+};

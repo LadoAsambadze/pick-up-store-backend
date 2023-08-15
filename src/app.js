@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import swaggerMiddleware from "./middlewares/swagger-middleware.js";
 import productsInfo from "./controllers/productsController.js";
-import { Login, Singup } from "./controllers/userController.js";
+import { Login, Singup, profile } from "./controllers/userController.js";
 import dotenv from "dotenv";
 
 const app = express();
@@ -17,6 +17,7 @@ app.use("/image", express.static("public/storage/images"));
 app.get("/all", productsInfo);
 app.post("/login", Login);
 app.post("/singup", Singup);
+app.get("/profile", profile);
 
 app.use("/", swaggerMiddleware());
 
