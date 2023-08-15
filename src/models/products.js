@@ -13,9 +13,6 @@ const products = new Schema({
   price: {
     type: Schema.Types.Number,
   },
-  size: {
-    type: [Schema.Types.String],
-  },
   brand: {
     type: Schema.Types.String,
   },
@@ -32,8 +29,9 @@ const products = new Schema({
       color: {
         type: Schema.Types.String,
       },
-      quantity: {
-        type: Schema.Types.Number,
+      size: {
+        type: Map,
+        of: Number,
       },
       urls: [
         {
