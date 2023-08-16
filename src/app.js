@@ -6,6 +6,7 @@ import swaggerMiddleware from "./middlewares/swagger-middleware.js";
 import productsInfo from "./controllers/productsController.js";
 import { Login, Singup, profile } from "./controllers/userController.js";
 import dotenv from "dotenv";
+import addCart, { getCart } from "./controllers/cartController.js";
 
 const app = express();
 dotenv.config();
@@ -18,6 +19,8 @@ app.get("/all", productsInfo);
 app.post("/login", Login);
 app.post("/singup", Singup);
 app.get("/profile", profile);
+app.post("/addCart", addCart);
+app.get("/getCart", getCart);
 
 app.use("/", swaggerMiddleware());
 
