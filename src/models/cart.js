@@ -4,6 +4,9 @@ const cart = new Schema({
   product_id: {
     type: Schema.Types.String,
   },
+  image: {
+    type: Schema.Types.String,
+  },
   size: {
     type: Schema.Types.String,
   },
@@ -13,7 +16,9 @@ const cart = new Schema({
   quantity: {
     type: Schema.Types.Number,
   },
- 
+  name: {
+    type: Schema.Types.String,
+  },
 });
 
 export const cartProduct = model("cart", cart);
