@@ -19,6 +19,9 @@ const cart = new Schema({
   name: {
     type: Schema.Types.String,
   },
+  price: {
+    type: Schema.Types.String,
+  },
 });
 
 export const cartProduct = model("cart", cart);
