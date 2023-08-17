@@ -1,10 +1,10 @@
 import { cartProduct } from "../models/cart.js";
 
 const addCart = async (req, res) => {
-  const { product_id, size, color, quantity, image, name, price } = req.body;
+  const { product_id, size, color, quantity, image, name, price, amount } =
+    req.body;
 
   try {
-    // Check if an item with the same product_id, size, color, and quantity already exists in the cart
     const existingCartItem = await cartProduct.findOne({
       product_id,
       name,
@@ -13,6 +13,7 @@ const addCart = async (req, res) => {
       color,
       quantity,
       price,
+      amount,
     });
 
     if (existingCartItem) {
@@ -29,6 +30,7 @@ const addCart = async (req, res) => {
         color,
         quantity,
         price,
+        amount,
       });
 
       await cartItem.save();
