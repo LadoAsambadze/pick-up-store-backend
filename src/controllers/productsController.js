@@ -5,7 +5,7 @@ const productsInfo = async (_, res) => {
     const products = await productsData.find();
     res.status(200).json({ message: "Fetched successfully", products });
   } catch (error) {
-    console.log(error, "Failed fetch products");
+    console.log(error, "Status failed");
   }
 };
 
