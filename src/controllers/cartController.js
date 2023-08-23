@@ -13,7 +13,6 @@ const addCart = async (req, res) => {
       color,
       quantity,
       price,
-      amount,
     });
 
     if (existingCartItem) {
@@ -55,6 +54,40 @@ export const getCart = async (req, res) => {
     res.status(200).json({ message: "get/done", selectedItem });
   } catch (error) {
     res.status(500).json({ message: "not done", error });
+  }
+};
+export const updateCart = async (req, res) => {
+  try {
+    const { product_id } = req.params;
+    const { new_amount } = req.body;
+
+    const item = await cartProduct.findOne({ product_id });
+
+    if (!item) {
+      res.status(404).json({ message: "fItem not found" });
+    } else {
+      item.amount = new_amount;
+      await item.save();
+      res
+        .status(200)
+        .json({ message: "Item amount changed successfuly!", item });
+    }
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ message: "An error occurred while updating the cart" });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  const { product_id } = req.params;
+  const deletedItem = await cartProduct.deleteOne({ product_id });
+
+  try {
+    res.status(200).json({ message: "Deleted successfuly!", deletedItem });
+  } catch (error) {
+    res.status(500).json({ message: "Failed", error });
   }
 };
 
