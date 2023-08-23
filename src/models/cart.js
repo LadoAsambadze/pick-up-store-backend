@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 const cart = new Schema({
   product_id: {
@@ -24,6 +25,9 @@ const cart = new Schema({
   },
   amount: {
     type: Schema.Types.Number,
+  },
+  purchase_id: {
+    type: Schema.Types.String,
   },
 });
 

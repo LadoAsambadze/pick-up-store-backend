@@ -1,4 +1,5 @@
 import { cartProduct } from "../models/cart.js";
+import { v4 as uuidv4 } from "uuid";
 
 const addCart = async (req, res) => {
   const { product_id, size, color, quantity, image, name, price, amount } =
@@ -23,6 +24,7 @@ const addCart = async (req, res) => {
     } else {
       const cartItem = new cartProduct({
         product_id,
+        purchase_id: uuidv4(),
         name,
         image,
         size,
@@ -46,9 +48,9 @@ const addCart = async (req, res) => {
 };
 
 export const getCart = async (req, res) => {
-  const { product_id } = req.body;
+  const { purchase_id } = req.body;
 
-  const selectedItem = await cartProduct.find(product_id);
+  const selectedItem = await cartProduct.find(purchase_id);
 
   try {
     res.status(200).json({ message: "get/done", selectedItem });
@@ -81,8 +83,8 @@ export const updateCart = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
-  const { product_id } = req.params;
-  const deletedItem = await cartProduct.deleteOne({ product_id });
+  const { purchase_id } = req.params;
+  const deletedItem = await cartProduct.deleteOne({ purchase_id });
 
   try {
     res.status(200).json({ message: "Deleted successfuly!", deletedItem });
