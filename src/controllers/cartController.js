@@ -1,9 +1,18 @@
 import { cartProduct } from "../models/cart.js";
 import { v4 as uuidv4 } from "uuid";
 
-const addCart = async (req, res) => {
-  const { product_id, size, color, quantity, image, name, price, amount } =
-    req.body;
+export const addCart = async (req, res) => {
+  const {
+    product_id,
+    size,
+    color,
+    quantity,
+    image,
+    name,
+    price,
+    amount,
+    purchase_id,
+  } = req.body;
 
   try {
     const existingCartItem = await cartProduct.findOne({
@@ -14,12 +23,12 @@ const addCart = async (req, res) => {
       color,
       quantity,
       price,
+      purchase_id,
     });
 
     if (existingCartItem) {
       res.status(400).json({
-        message:
-          "Item with the same product_id, size, color, and quantity already exists in the cart",
+        message: "Item with the same description already exists in the cart",
       });
     } else {
       const cartItem = new cartProduct({
@@ -33,9 +42,7 @@ const addCart = async (req, res) => {
         price,
         amount,
       });
-
       await cartItem.save();
-
       res
         .status(200)
         .json({ message: "Item added to cart successfully", cartItem });
@@ -48,25 +55,22 @@ const addCart = async (req, res) => {
 };
 
 export const getCart = async (req, res) => {
-  const { purchase_id } = req.body;
-
+  const { purchase_id } = req.params;
   const selectedItem = await cartProduct.find(purchase_id);
-
   try {
-    res.status(200).json({ message: "get/done", selectedItem });
+    res.status(200).json({ message: "Successfuly fetched!", selectedItem });
   } catch (error) {
-    res.status(500).json({ message: "not done", error });
+    res.status(500).json({ message: "Fetch failed", error });
   }
 };
 export const updateCart = async (req, res) => {
   try {
-    const { product_id } = req.params;
+    const { purchase_id } = req.params;
     const { new_amount } = req.body;
 
-    const item = await cartProduct.findOne({ product_id });
-
+    const item = await cartProduct.findOne({ purchase_id });
     if (!item) {
-      res.status(404).json({ message: "fItem not found" });
+      res.status(404).json({ message: "Item not found" });
     } else {
       item.amount = new_amount;
       await item.save();
@@ -85,12 +89,9 @@ export const updateCart = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   const { purchase_id } = req.params;
   const deletedItem = await cartProduct.deleteOne({ purchase_id });
-
   try {
     res.status(200).json({ message: "Deleted successfuly!", deletedItem });
   } catch (error) {
-    res.status(500).json({ message: "Failed", error });
+    res.status(500).json({ message: "Deteling failed", error });
   }
 };
-
-export default addCart;
