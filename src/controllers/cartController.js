@@ -2,50 +2,49 @@ import { cartProduct } from "../models/cart.js";
 import { v4 as uuidv4 } from "uuid";
 
 export const addCart = async (req, res) => {
-  const {
-    product_id,
-    size,
-    color,
-    quantity,
-    image,
-    name,
-    price,
-    amount,
-    purchase_id,
-  } = req.body;
+  const { user, orderItems } = req.body;
 
   try {
-    const existingCartItem = await cartProduct.findOne({
-      product_id,
-      name,
-      size,
-      image,
-      color,
-      quantity,
-      price,
-      purchase_id,
+    const existingUser = await cartProduct.findOne({
+      user,
     });
-
-    if (existingCartItem) {
-      res.status(400).json({
-        message: "Item with the same description already exists in the cart",
-      });
-    } else {
+    if (!existingUser) {
       const cartItem = new cartProduct({
-        product_id,
-        purchase_id: uuidv4(),
-        name,
-        image,
-        size,
-        color,
-        quantity,
-        price,
-        amount,
+        user,
+        orderItems: orderItems.map((item) => ({
+          ...item,
+          purchase_id: uuidv4(),
+        })),
       });
       await cartItem.save();
       res
         .status(200)
         .json({ message: "Item added to cart successfully", cartItem });
+    } else {
+      let itemExists = false;
+      orderItems.forEach((item) => {
+        item.purchase_id = uuidv4();
+        const isPresent = existingUser.orderItems.some(
+          (existingItem) =>
+            existingItem.size === item.size &&
+            existingItem.color === item.color &&
+            existingItem.name == item.name
+        );
+
+        if (isPresent) {
+          itemExists = true;
+        } else {
+          existingUser.orderItems.push(...orderItems);
+        }
+      });
+      if (itemExists) {
+        res.status(200).json({ message: "Item exists" });
+      } else {
+        await existingUser.save();
+        res
+          .status(200)
+          .json({ message: "Item added to cart successfully", existingUser });
+      }
     }
   } catch (error) {
     res
@@ -55,10 +54,10 @@ export const addCart = async (req, res) => {
 };
 
 export const getCart = async (req, res) => {
-  const { purchase_id } = req.params;
-  const selectedItem = await cartProduct.find(purchase_id);
+  const userId = req.query.userId;
+  const selectedItem = await cartProduct.find({ user: userId });
   try {
-    res.status(200).json({ message: "Successfuly fetched!", selectedItem });
+    res.status(200).json({ message: "Successfully fetched!", selectedItem });
   } catch (error) {
     res.status(500).json({ message: "Fetch failed", error });
   }
@@ -66,17 +65,24 @@ export const getCart = async (req, res) => {
 export const updateCart = async (req, res) => {
   try {
     const { purchase_id } = req.params;
-    const { new_amount } = req.body;
+    const { new_amount, user_id } = req.body;
 
-    const item = await cartProduct.findOne({ purchase_id });
-    if (!item) {
-      res.status(404).json({ message: "Item not found" });
+    const cart = await cartProduct.findOne({ user: user_id });
+    if (!cart) {
+      res.status(404).json({ message: "Cart not found" });
     } else {
-      item.amount = new_amount;
-      await item.save();
-      res
-        .status(200)
-        .json({ message: "Item amount changed successfuly!", item });
+      const item = cart.orderItems.find(
+        (item) => item.purchase_id === purchase_id
+      );
+      if (!item) {
+        res.status(404).json({ message: "Item not found" });
+      } else {
+        item.amount = new_amount;
+        await cart.save();
+        res
+          .status(200)
+          .json({ message: "Item amount changed successfully!", cart });
+      }
     }
   } catch (error) {
     console.error(error);
@@ -88,10 +94,23 @@ export const updateCart = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   const { purchase_id } = req.params;
-  const deletedItem = await cartProduct.deleteOne({ purchase_id });
+  const { user_id } = req.body;
+
   try {
-    res.status(200).json({ message: "Deleted successfuly!", deletedItem });
+    const userCart = await cartProduct.findOne({ user: user_id });
+    const itemIndex = userCart.orderItems.findIndex(
+      (item) => item.purchase_id === purchase_id
+    );
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ message: "Item not found in the cart" });
+    }
+
+    userCart.orderItems.splice(itemIndex, 1);
+    await userCart.save();
+
+    res.status(200).json({ message: "Deleted successfully!", userCart });
   } catch (error) {
-    res.status(500).json({ message: "Deteling failed", error });
+    res.status(500).json({ message: "Deleting failed", error });
   }
 };

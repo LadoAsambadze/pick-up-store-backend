@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 export const Login = async (req, res) => {
   const { email, password } = req.body;
-
   try {
     if (!email || !password) {
       res.status(400).json({ message: "all fields must be filled" });
@@ -15,6 +14,7 @@ export const Login = async (req, res) => {
           const token = jwt.sign(
             {
               user: user.email,
+              id: user._id,
             },
             process.env.SECRET
           );
@@ -58,11 +58,11 @@ export const Singup = async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(500).json({ message: "Login error", error });
+    res.status(500).json({ message: "Sing up error", error });
   }
 };
 
-export const profile = async (req, res) => {
+export const Profile = async (req, res) => {
   const { authorization } = req.headers;
 
   if (authorization) {
@@ -70,7 +70,7 @@ export const profile = async (req, res) => {
 
     jwt.verify(token, process.env.SECRET, {}, (error, useData) => {
       if (error) throw error;
-      res.status(200).json(useData);
+      res.status(200).json({ message: "Verified", useData });
     });
   } else {
     res.status(403).json("No token!");
