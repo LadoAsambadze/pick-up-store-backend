@@ -15,6 +15,7 @@ export const Login = async (req, res) => {
             {
               user: user.email,
               id: user._id,
+              isAdmin: user.isAdmin,
             },
             process.env.SECRET
           );
@@ -49,9 +50,7 @@ export const Singup = async (req, res) => {
           email,
           password: hash,
         });
-
         const newUser = await user.save();
-
         res.status(200).json({ message: "Successful Sing up", newUser });
       } else {
         res.status(400).json({ message: "Email already exists" });
@@ -64,7 +63,6 @@ export const Singup = async (req, res) => {
 
 export const Profile = async (req, res) => {
   const { authorization } = req.headers;
-
   if (authorization) {
     const token = authorization.trim().split(" ")[1];
 
@@ -76,3 +74,4 @@ export const Profile = async (req, res) => {
     res.status(403).json("No token!");
   }
 };
+

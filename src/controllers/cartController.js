@@ -95,7 +95,6 @@ export const updateCart = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   const { purchase_id } = req.params;
   const { user_id } = req.body;
-
   try {
     const userCart = await cartProduct.findOne({ user: user_id });
     const itemIndex = userCart.orderItems.findIndex(
@@ -105,7 +104,6 @@ export const deleteProduct = async (req, res) => {
     if (itemIndex === -1) {
       return res.status(404).json({ message: "Item not found in the cart" });
     }
-
     userCart.orderItems.splice(itemIndex, 1);
     await userCart.save();
 

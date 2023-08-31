@@ -15,6 +15,8 @@ import {
 
 import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
+import authMiddleware from "./middlewares/auth-middleware.js";
+import cartRouter from "./routes/cart.js";
 
 const app = express();
 dotenv.config();
@@ -23,17 +25,9 @@ connect();
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/image", express.static("public/storage/images"));
-
 app.use("/api", productRouter);
 app.use("/user", userRouter);
-
-app.post("/login", Login);
-app.post("/singup", Singup);
-app.get("/profile", Profile);
-app.post("/addCart", addCart);
-app.get("/getCart", getCart);
-app.put("/updateCart/:purchase_id", updateCart);
-app.delete("/deleteProduct/:purchase_id", deleteProduct);
+app.use("/order", cartRouter);
 
 app.use("/", swaggerMiddleware());
 
