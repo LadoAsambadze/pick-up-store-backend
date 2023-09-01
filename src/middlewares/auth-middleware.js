@@ -6,7 +6,7 @@ const authMiddleware = (req, res, next) => {
     const token = authorization.trim().split(" ")[1];
     jwt.verify(token, process.env.SECRET, {}, (error, useData) => {
       if (error) {
-        next(error);
+        res.status(403).json("Not verified!");
       } else {
         next();
       }
