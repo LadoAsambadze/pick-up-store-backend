@@ -47,7 +47,3 @@ const cart = new Schema(
 );
 
 export const cartProduct = model("cart", cart);
-
-
-
- 

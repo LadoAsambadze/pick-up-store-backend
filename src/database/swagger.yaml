@@ -52,3 +52,41 @@ paths:
       responses:
         "200":
           description: The product was successfully deleted from the cart.
+
+  /makeOrder:
+    post:
+      summary: Make an order
+      description: This endpoint allows a user to make an order by posting their cart products to the order list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: The ID of the user making the order.
+      responses:
+        "200":
+          description: Successfully posted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully posted!
+        "500":
+          description: Post failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Post failed.
+                  error:
+                    type: object
