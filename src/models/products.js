@@ -1,5 +1,4 @@
 import { model, Schema } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
 
 const reviewSchema = new Schema(
   {
@@ -67,10 +66,6 @@ const products = new Schema(
     },
     images: [
       {
-        own_id: {
-          type: Schema.Types.String,
-          default: uuidv4,
-        },
         color: {
           type: Schema.Types.String,
         },

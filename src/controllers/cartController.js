@@ -8,6 +8,7 @@ export const addCart = async (req, res) => {
     const existingUser = await cartProduct.findOne({
       user,
     });
+
     if (!existingUser) {
       const cartItem = new cartProduct({
         user,
