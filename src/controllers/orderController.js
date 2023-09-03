@@ -1,7 +1,9 @@
 import { orderList } from "../models/order.js";
+import { productsData } from "../models/products.js";
 
 export const makeOrder = async (req, res) => {
-  const { user, items } = req.body;
+  const { user, items, shippingDetails } = req.body;
+  console.log(items);
 
   try {
     const order = new orderList({
@@ -9,7 +11,9 @@ export const makeOrder = async (req, res) => {
       orderItems: items.map((item) => ({
         ...item,
       })),
+      shippingDetails: shippingDetails,
     });
+
     await order.save();
     res.status(200).json({ message: "Item added to cart successfully", order });
   } catch (error) {

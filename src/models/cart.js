@@ -40,6 +40,9 @@ const cart = new Schema(
           type: Schema.Types.String,
           ref: "Product",
         },
+        own_id: {
+          type: Schema.Types.String,
+        },
       },
     ],
   },
