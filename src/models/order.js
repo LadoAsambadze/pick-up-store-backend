@@ -1,16 +1,16 @@
 import { model, Schema } from "mongoose";
 
-const cart = new Schema(
+const orderSchema = new Schema(
   {
     user: {
-      type: Schema.Types.String,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
     },
     orderItems: [
       {
         product_id: {
-          type: Schema.Types.String,
+          type: Schema.Types.ObjectId,
         },
         image: {
           type: Schema.Types.String,
@@ -37,17 +37,31 @@ const cart = new Schema(
           type: Schema.Types.String,
         },
         product: {
-          type: Schema.Types.String,
+          type: Schema.Types.ObjectId,
           ref: "Product",
         },
       },
     ],
+    shippingAddress: {
+      fullName: {
+        type: Schema.Types.String,
+      },
+      city: {
+        type: Schema.Types.String,
+      },
+      address: {
+        type: Schema.Types.String,
+      },
+      phoneNumber: {
+        type: Schema.Types.String,
+      },
+    },
   },
   { timestamps: true }
 );
 
-export const cartProduct = model("cart", cart);
+const Order = model("Order", orderSchema);
 
+export default Order;
 
-
- 
+export const orderList = model("cart", order);
