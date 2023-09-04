@@ -1,5 +1,6 @@
 import { cartProduct } from "../models/cart.js";
 import { v4 as uuidv4 } from "uuid";
+import { productsData } from "../models/products.js";
 
 export const addCart = async (req, res) => {
   const { user, orderItems } = req.body;
@@ -67,8 +68,31 @@ export const updateCart = async (req, res) => {
   try {
     const { purchase_id } = req.params;
     const { new_amount, user_id } = req.body;
-
     const cart = await cartProduct.findOne({ user: user_id });
+    // const allProducts = await productsData.find();
+    // const ownIds = cart.orderItems.map((item) => item.own_id);
+
+    // const filteredImages = ownIds.map((item) =>
+    //   allProducts.find((product) =>
+    //     product.images.find((exact) => exact._id.toString() === item)
+    //   )
+    // );
+    // for (const [index, item] of filteredImages.entries()) {
+    //   const imageIndex = item.images.findIndex(
+    //     (product) => product._id.toString() === ownIds[index]
+    //   );
+
+    //   const example = item.images[imageIndex].size;
+
+    //   example[cart.orderItems[index].size] = 0;
+    //   item.images[imageIndex].size = example;
+
+    //   const ragaca = await productsData.findOneAndUpdate(
+    //     { _id: item._id },
+    //     { images: item.images }
+    //   );
+    // }
+
     if (!cart) {
       res.status(404).json({ message: "Cart not found" });
     } else {

@@ -70,8 +70,7 @@ const products = new Schema(
           type: Schema.Types.String,
         },
         size: {
-          type: Map,
-          of: Number,
+          type: Schema.Types.Mixed,
         },
         urls: [
           {
