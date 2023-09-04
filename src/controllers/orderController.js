@@ -68,6 +68,7 @@ export const makeOrder = async (req, res) => {
 
     if (isValid) {
       await order.save();
+
       res
         .status(200)
         .json({ message: "Item added to cart successfully", order });
