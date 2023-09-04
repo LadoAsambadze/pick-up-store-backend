@@ -34,7 +34,7 @@ export const makeOrder = async (req, res) => {
 
       item.images[imageIndex].size = example;
 
-      const ragaca = await productsData.findOneAndUpdate(
+      await productsData.findOneAndUpdate(
         { _id: item._id },
         { images: item.images }
       );
