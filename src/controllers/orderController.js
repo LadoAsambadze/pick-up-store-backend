@@ -17,29 +17,33 @@ export const makeOrder = async (req, res) => {
     const allProducts = await productsData.find();
     const newCart = await cartProduct.find();
     const ownIds = cart.orderItems.map((item) => item.own_id);
+    const purchaseIds = cart.orderItems.map((item) => item.purchase_id);
 
     const filteredImages = ownIds.map((item) =>
       allProducts.find((product) =>
         product.images.find((exact) => exact._id.toString() === item)
       )
     );
-    const filteredCart = ownIds.map((item) =>
+    const filteredCart = purchaseIds.map((item) =>
       newCart.find((product) =>
-        product.orderItems.find((exact) => exact.own_id === item)
+        product.orderItems.find((exact) => exact.purchase_id === item)
       )
     );
+
     for (const [index, item] of filteredCart.entries()) {
       const cartIndex = item.orderItems.findIndex(
-        (product) => product.own_id === ownIds[index]
+        (product) => product.purchase_id === purchaseIds[index]
       );
+
       item.orderItems[cartIndex].quantity =
         item.orderItems[cartIndex].quantity - item.orderItems[cartIndex].amount;
       item.orderItems[cartIndex].amount = 1;
-
-      await cartProduct.findOneAndUpdate(
-        { own_id: item.own_id },
-        { orderItems: item.orderItems }
+      console.log(
+        item.orderItems[cartIndex].quantity,
+        item.orderItems[cartIndex].amount
       );
+      console.log(item.orderItems);
+      await cartProduct.updateMany({ orderItems: item.orderItems });
     }
 
     let isValid = true;
