@@ -4,7 +4,6 @@ import { cartProduct } from "../models/cart.js";
 
 export const makeOrder = async (req, res) => {
   const { user, items, shippingDetails } = req.body;
-
   try {
     const order = new orderList({
       user,
@@ -29,12 +28,10 @@ export const makeOrder = async (req, res) => {
         product.orderItems.find((exact) => exact.purchase_id === item)
       )
     );
-
     for (const [index, item] of filteredCart.entries()) {
       const cartIndex = item.orderItems.findIndex(
         (product) => product.purchase_id === purchaseIds[index]
       );
-
       item.orderItems[cartIndex].quantity =
         item.orderItems[cartIndex].quantity - item.orderItems[cartIndex].amount;
       item.orderItems[cartIndex].amount = 1;
@@ -51,28 +48,21 @@ export const makeOrder = async (req, res) => {
       const imageIndex = item.images.findIndex(
         (product) => product._id.toString() === ownIds[index]
       );
-
       const example = item.images[imageIndex].size;
-
       example[cart.orderItems[index].size] =
         example[cart.orderItems[index].size] - cart.orderItems[index].amount;
-
       if (example[cart.orderItems[index].size] < 0) {
         isValid = false;
         break;
       }
-
       item.images[imageIndex].size = example;
-
       await productsData.findOneAndUpdate(
         { _id: item._id },
         { images: item.images }
       );
     }
-
     if (isValid) {
       await order.save();
-
       res
         .status(200)
         .json({ message: "Item added to cart successfully", order });
