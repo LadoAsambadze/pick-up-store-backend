@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-
+import { v4 as uuidv4 } from "uuid";
 const reviewSchema = new Schema(
   {
     user: {
@@ -24,11 +24,6 @@ const reviewSchema = new Schema(
 
 const products = new Schema(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
     type: {
       type: Schema.Types.String,
     },
@@ -60,12 +55,11 @@ const products = new Schema(
       type: Schema.Types.Number,
       default: 0,
     },
-    countInStock: {
-      type: Schema.Types.Number,
-      default: 0,
-    },
-    images: [
+    itemList: [
       {
+        _id: {
+          type: Schema.Types.ObjectId,
+        },
         color: {
           type: Schema.Types.String,
         },
