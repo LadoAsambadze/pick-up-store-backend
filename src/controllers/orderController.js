@@ -20,7 +20,7 @@ export const makeOrder = async (req, res) => {
 
     const filteredImages = ownIds.map((item) =>
       allProducts.find((product) =>
-        product.images.find((exact) => exact._id.toString() === item)
+        product.itemList.find((exact) => exact._id.toString() === item)
       )
     );
     const filteredCart = purchaseIds.map((item) =>
@@ -45,20 +45,20 @@ export const makeOrder = async (req, res) => {
 
     let isValid = true;
     for (const [index, item] of filteredImages.entries()) {
-      const imageIndex = item.images.findIndex(
+      const imageIndex = item.itemList.findIndex(
         (product) => product._id.toString() === ownIds[index]
       );
-      const example = item.images[imageIndex].size;
+      const example = item.itemList[imageIndex].size;
       example[cart.orderItems[index].size] =
         example[cart.orderItems[index].size] - cart.orderItems[index].amount;
       if (example[cart.orderItems[index].size] < 0) {
         isValid = false;
         break;
       }
-      item.images[imageIndex].size = example;
+      item.itemList[imageIndex].size = example;
       await productsData.findOneAndUpdate(
         { _id: item._id },
-        { images: item.images }
+        { itemList: item.itemList }
       );
     }
     if (isValid) {

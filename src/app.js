@@ -9,8 +9,8 @@ import dotenv from "dotenv";
 import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
 import cartRouter from "./routes/cart.js";
-import { makeOrder } from "./controllers/orderController.js";
 import { getOrders } from "./controllers/adminController.js";
+import orderRouter from "./routes/orderRouter.js";
 
 const app = express();
 dotenv.config();
@@ -22,7 +22,7 @@ app.use("/image", express.static("public/storage/images"));
 app.use("/api", productRouter);
 app.use("/user", userRouter);
 app.use("/order", cartRouter);
-app.post("/makeorder", makeOrder);
+app.use("/order", orderRouter);
 app.get("/getorders", getOrders);
 app.use("/", swaggerMiddleware());
 
