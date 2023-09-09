@@ -22,7 +22,7 @@ app.use("/image", express.static("public/storage/images"));
 app.use("/api", productRouter);
 app.use("/user", userRouter);
 app.use("/order", cartRouter);
-app.use("/order", orderRouter);
+app.use("/orderprocess", orderRouter);
 app.get("/getorders", getOrders);
 app.use("/", swaggerMiddleware());
 
