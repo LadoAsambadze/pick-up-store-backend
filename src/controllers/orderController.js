@@ -49,6 +49,9 @@ export const makeOrder = async (req, res) => {
             item.orderItems[cartIndex].quantity -
             item.orderItems[cartIndex].amount;
           item.orderItems[cartIndex].amount = 1;
+        } else {
+          // If the product is not found in the cart, skip it
+          continue;
         }
 
         await cartProduct.updateMany({
