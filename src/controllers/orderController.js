@@ -1,7 +1,3 @@
-import { orderList } from "../models/order.js";
-import { productsData } from "../models/products.js";
-import { cartProduct } from "../models/cart.js";
-
 export const makeOrder = async (req, res) => {
   const { user, items, shippingDetails } = req.body;
   try {
@@ -32,54 +28,42 @@ export const makeOrder = async (req, res) => {
       );
 
       if (cartIndex === -1) {
-        // The item does not exist in the user's cart, so skip the update
         continue;
       }
 
-      if (item.orderItems[cartIndex].quantity <= 0) {
-        allNonZero = false;
-        break;
+      const productExists = cart.orderItems.some(
+        (item) => item.purchase_id === purchaseIds[index]
+      );
+
+      if (!productExists) {
+        continue;
       }
+
+      item.orderItems[cartIndex].quantity =
+        item.orderItems[cartIndex].quantity - item.orderItems[cartIndex].amount;
+      item.orderItems[cartIndex].amount = 1;
+
+      await cartProduct.updateMany({ orderItems: item.orderItems });
     }
 
-    if (allNonZero) {
-      for (const [index, item] of filteredCart.entries()) {
-        const cartIndex = item.orderItems.findIndex(
-          (product) => product.purchase_id === purchaseIds[index]
-        );
+    for (const [index, item] of filteredList.entries()) {
+      const listIndex = item.itemList.findIndex(
+        (product) => product._id.toString() === ownIds[index]
+      );
 
-        if (cartIndex === -1) {
-          // The item does not exist in the user's cart, so skip the update
-          continue;
-        }
+      const example = item.itemList[listIndex].size;
+      example[cart.orderItems[index].size] =
+        example[cart.orderItems[index].size] - cart.orderItems[index].amount;
 
-        item.orderItems[cartIndex].quantity =
-          item.orderItems[cartIndex].quantity -
-          item.orderItems[cartIndex].amount;
-        item.orderItems[cartIndex].amount = 1;
-
-        await cartProduct.updateMany({ orderItems: item.orderItems });
+      if (example[cart.orderItems[index].size] < 0) {
+        isValid = false;
+        break;
       }
 
-      for (const [index, item] of filteredList.entries()) {
-        const listIndex = item.itemList.findIndex(
-          (product) => product._id.toString() === ownIds[index]
-        );
-
-        const example = item.itemList[listIndex].size;
-        example[cart.orderItems[index].size] =
-          example[cart.orderItems[index].size] - cart.orderItems[index].amount;
-
-        if (example[cart.orderItems[index].size] < 0) {
-          isValid = false;
-          break;
-        }
-
-        await productsData.findOneAndUpdate(
-          { _id: item._id },
-          { itemList: item.itemList }
-        );
-      }
+      await productsData.findOneAndUpdate(
+        { _id: item._id },
+        { itemList: item.itemList }
+      );
     }
 
     if (isValid && isEnough && allNonZero) {
