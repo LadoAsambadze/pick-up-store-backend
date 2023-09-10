@@ -31,10 +31,6 @@ export const makeOrder = async (req, res) => {
         (product) => product.purchase_id === purchaseIds[index]
       );
 
-      if (cartIndex === -1) {
-        continue;
-      }
-
       if (item.orderItems[cartIndex].quantity <= 0) {
         allNonZero = false;
         break;
@@ -47,10 +43,6 @@ export const makeOrder = async (req, res) => {
           (product) => product.purchase_id === purchaseIds[index]
         );
 
-        if (cartIndex === -1) {
-          continue;
-        }
-
         item.orderItems[cartIndex].quantity =
           item.orderItems[cartIndex].quantity -
           item.orderItems[cartIndex].amount;
@@ -58,7 +50,7 @@ export const makeOrder = async (req, res) => {
 
         await cartProduct.updateMany({ orderItems: item.orderItems });
       }
-      console.log(item.orderItems);
+
       for (const [index, item] of filteredList.entries()) {
         const listIndex = item.itemList.findIndex(
           (product) => product._id.toString() === ownIds[index]
