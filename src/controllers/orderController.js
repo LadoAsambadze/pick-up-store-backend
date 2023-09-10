@@ -1,3 +1,7 @@
+import { orderList } from "../models/order.js";
+import { productsData } from "../models/products.js";
+import { cartProduct } from "../models/cart.js";
+
 export const makeOrder = async (req, res) => {
   const { user, items, shippingDetails } = req.body;
   try {
