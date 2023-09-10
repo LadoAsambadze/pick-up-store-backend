@@ -38,25 +38,12 @@ export const makeOrder = async (req, res) => {
     }
 
     if (allNonZero) {
-      for (const [index, item] of filteredCart.entries()) {
-        const cartIndex = item.orderItems.findIndex(
-          (product) => product.purchase_id === purchaseIds[index]
+      for (const [item] of filteredCart.entries()) {
+        const cartItem = item.orderItems.map((product) =>
+          purchaseIds.includes(product.purchase_id)
         );
 
-        if (cartIndex !== -1) {
-          // If the product is found in the cart, update its quantity and amount
-          item.orderItems[cartIndex].quantity =
-            item.orderItems[cartIndex].quantity -
-            item.orderItems[cartIndex].amount;
-          item.orderItems[cartIndex].amount = 1;
-        } else {
-          // If the product is not found in the cart, skip it
-          continue;
-        }
-
-        await cartProduct.updateMany({
-          orderItems: item.orderItems,
-        });
+        console.log(cartItem);
       }
 
       for (const [index, item] of filteredList.entries()) {
@@ -107,3 +94,4 @@ export const makeOrder = async (req, res) => {
     console.log(error);
   }
 };
+
