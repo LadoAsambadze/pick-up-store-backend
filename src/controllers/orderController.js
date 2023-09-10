@@ -48,7 +48,10 @@ export const makeOrder = async (req, res) => {
           item.orderItems[cartIndex].amount;
         item.orderItems[cartIndex].amount = 1;
 
-        await cartProduct.updateMany({ orderItems: item.orderItems });
+        await cartProduct.updateMany(
+          { "orderItems.own_id": item.orderItems.own_id },
+          { $set: { "orderItems.$": item.orderItems } }
+        );
       }
 
       for (const [index, item] of filteredList.entries()) {
