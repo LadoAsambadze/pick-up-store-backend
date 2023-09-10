@@ -24,6 +24,7 @@ export const makeOrder = async (req, res) => {
 
     let isValid = true;
     let isEnough = true;
+    let allNonZero = true;
 
     for (const [index, item] of filteredCart.entries()) {
       const cartIndex = item.orderItems.findIndex(
@@ -31,38 +32,47 @@ export const makeOrder = async (req, res) => {
       );
 
       if (item.orderItems[cartIndex].quantity <= 0) {
-        isEnough = false;
+        allNonZero = false;
         break;
       }
-
-      item.orderItems[cartIndex].quantity =
-        item.orderItems[cartIndex].quantity - item.orderItems[cartIndex].amount;
-      item.orderItems[cartIndex].amount = 1;
-
-      await cartProduct.updateMany({ orderItems: item.orderItems });
     }
 
-    for (const [index, item] of filteredList.entries()) {
-      const listIndex = item.itemList.findIndex(
-        (product) => product._id.toString() === ownIds[index]
-      );
+    if (allNonZero) {
+      for (const [index, item] of filteredCart.entries()) {
+        const cartIndex = item.orderItems.findIndex(
+          (product) => product.purchase_id === purchaseIds[index]
+        );
 
-      const example = item.itemList[listIndex].size;
-      example[cart.orderItems[index].size] =
-        example[cart.orderItems[index].size] - cart.orderItems[index].amount;
+        item.orderItems[cartIndex].quantity =
+          item.orderItems[cartIndex].quantity -
+          item.orderItems[cartIndex].amount;
+        item.orderItems[cartIndex].amount = 1;
 
-      if (example[cart.orderItems[index].size] < 0) {
-        isValid = false;
-        break;
+        await cartProduct.updateMany({ orderItems: item.orderItems });
       }
 
-      await productsData.findOneAndUpdate(
-        { _id: item._id },
-        { itemList: item.itemList }
-      );
+      for (const [index, item] of filteredList.entries()) {
+        const listIndex = item.itemList.findIndex(
+          (product) => product._id.toString() === ownIds[index]
+        );
+
+        const example = item.itemList[listIndex].size;
+        example[cart.orderItems[index].size] =
+          example[cart.orderItems[index].size] - cart.orderItems[index].amount;
+
+        if (example[cart.orderItems[index].size] < 0) {
+          isValid = false;
+          break;
+        }
+
+        await productsData.findOneAndUpdate(
+          { _id: item._id },
+          { itemList: item.itemList }
+        );
+      }
     }
 
-    if (isValid && isEnough) {
+    if (isValid && isEnough && allNonZero) {
       const order = new orderList({
         user,
         orderItems: items.map((item) => ({
@@ -76,7 +86,7 @@ export const makeOrder = async (req, res) => {
       res
         .status(200)
         .json({ message: "Item added to cart successfully", order });
-    } else if (!isEnough) {
+    } else if (!isEnough || !allNonZero) {
       res.status(400).json({
         message: "Invalid order, not enough quantity, please update order",
       });
