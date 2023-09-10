@@ -48,9 +48,28 @@ export const makeOrder = async (req, res) => {
           item.orderItems[cartIndex].amount;
         item.orderItems[cartIndex].amount = 1;
 
-        await cartProduct.updateMany({
-          orderItems: item.orderItems.quantity,
-        });
+        await cartProduct.updateMany(
+          {
+            // Filter documents where at least one object in the orderItems array matches the condition
+            $or: item.orderItems.map((orderItem) => ({
+              "orderItems.own_id": orderItem.own_id,
+            })),
+          },
+          {
+            // Use $set to update the matching objects within the orderItems array
+            $set: {
+              "orderItems.$[elem]": item.orderItems.find((orderItem) => ({
+                "elem.own_id": orderItem.own_id,
+              })),
+            },
+          },
+          {
+            // This option allows you to specify arrayFilters to filter the elements in the array
+            arrayFilters: item.orderItems.map((orderItem) => ({
+              "elem.own_id": orderItem.own_id,
+            })),
+          }
+        );
       }
 
       for (const [index, item] of filteredList.entries()) {
