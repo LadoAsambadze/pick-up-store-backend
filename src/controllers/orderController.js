@@ -43,12 +43,17 @@ export const makeOrder = async (req, res) => {
           (product) => product.purchase_id === purchaseIds[index]
         );
 
-        item.orderItems[cartIndex].quantity =
-          item.orderItems[cartIndex].quantity -
-          item.orderItems[cartIndex].amount;
-        item.orderItems[cartIndex].amount = 1;
+        if (cartIndex !== -1) {
+          item.orderItems[cartIndex].quantity =
+            item.orderItems[cartIndex].quantity -
+            item.orderItems[cartIndex].amount;
+          item.orderItems[cartIndex].amount = 1;
 
-        await cartProduct.updateMany({ orderItems: item.orderItems });
+          await cartProduct.updateOne(
+            { user: item.user },
+            { orderItems: item.orderItems }
+          );
+        }
       }
 
       for (const [index, item] of filteredList.entries()) {
