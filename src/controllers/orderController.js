@@ -47,7 +47,7 @@ export const makeOrder = async (req, res) => {
           item.orderItems[cartIndex].quantity -
           item.orderItems[cartIndex].amount;
         item.orderItems[cartIndex].amount = 1;
-        const cartItem = await cartProduct.findOne({
+        const cartItem = await cartProduct.find({
           "orderItems.own_id": item.orderItems.own_id,
         });
 
