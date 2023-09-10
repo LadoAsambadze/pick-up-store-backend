@@ -42,33 +42,20 @@ export const makeOrder = async (req, res) => {
         const cartIndex = item.orderItems.findIndex(
           (product) => product.purchase_id === purchaseIds[index]
         );
-
-        item.orderItems[cartIndex].quantity =
-          item.orderItems[cartIndex].quantity -
-          item.orderItems[cartIndex].amount;
-        item.orderItems[cartIndex].amount = 1;
-
+    
+        if (cartIndex !== -1) {
+          // If the product is found in the cart, update its quantity and amount
+          item.orderItems[cartIndex].quantity =
+            item.orderItems[cartIndex].quantity -
+            item.orderItems[cartIndex].amount;
+          item.orderItems[cartIndex].amount = 1;
+        }
+    
         await cartProduct.updateMany({
           orderItems: item.orderItems,
         });
-
-        // Update quantities in other users' carts
-        for (const [otherIndex, otherUserCart] of filteredCart.entries()) {
-          if (otherIndex !== index) {
-            const otherCartIndex = otherUserCart.orderItems.findIndex(
-              (product) => product.own_id === ownIds[index]
-            );
-
-            if (otherCartIndex !== -1) {
-              otherUserCart.orderItems[otherCartIndex].quantity -= 1;
-
-              // Update the other user's cart
-              await cartProduct.updateMany({
-                orderItems: otherUserCart.orderItems,
-              });
-            }
-          }
-        }
+      }
+    
       }
 
       for (const [index, item] of filteredList.entries()) {
