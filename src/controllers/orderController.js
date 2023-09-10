@@ -42,7 +42,7 @@ export const makeOrder = async (req, res) => {
         const cartIndex = item.orderItems.findIndex(
           (product) => product.purchase_id === purchaseIds[index]
         );
-    
+
         if (cartIndex !== -1) {
           // If the product is found in the cart, update its quantity and amount
           item.orderItems[cartIndex].quantity =
@@ -50,12 +50,10 @@ export const makeOrder = async (req, res) => {
             item.orderItems[cartIndex].amount;
           item.orderItems[cartIndex].amount = 1;
         }
-    
+
         await cartProduct.updateMany({
           orderItems: item.orderItems,
         });
-      }
-    
       }
 
       for (const [index, item] of filteredList.entries()) {
