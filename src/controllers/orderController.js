@@ -31,6 +31,11 @@ export const makeOrder = async (req, res) => {
         (product) => product.purchase_id === purchaseIds[index]
       );
 
+      if (cartIndex === -1) {
+        // The item does not exist in the user's cart, so skip the update
+        continue;
+      }
+
       if (item.orderItems[cartIndex].quantity <= 0) {
         allNonZero = false;
         break;
@@ -42,6 +47,11 @@ export const makeOrder = async (req, res) => {
         const cartIndex = item.orderItems.findIndex(
           (product) => product.purchase_id === purchaseIds[index]
         );
+
+        if (cartIndex === -1) {
+          // The item does not exist in the user's cart, so skip the update
+          continue;
+        }
 
         item.orderItems[cartIndex].quantity =
           item.orderItems[cartIndex].quantity -
