@@ -49,7 +49,7 @@ export const makeOrder = async (req, res) => {
         item.orderItems[cartIndex].amount = 1;
 
         await cartProduct.updateMany({
-          orderItems: item.orderItems[cartIndex].quantity,
+          orderItems: item.orderItems.quantity,
         });
       }
 
