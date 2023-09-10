@@ -48,33 +48,27 @@ export const makeOrder = async (req, res) => {
           item.orderItems[cartIndex].amount;
         item.orderItems[cartIndex].amount = 1;
 
-        await cartProduct.updateMany(
-          {
-            // Filter documents where at least one object in the orderItems array matches the condition
-            $or: item.orderItems.map((orderItem) => ({
-              "orderItems.own_id": orderItem.own_id,
-            })),
-          },
-          {
-            $set: (userCartProduct) => {
-              // Iterate over the user's existing orderItems
-              const updatedOrderItems = userCartProduct.orderItems.map(
-                (existingOrderItem) => {
-                  // Check if an item with the same own_id exists in the new orderItems
-                  const newItem = item.orderItems.find(
-                    (newOrderItem) =>
-                      newOrderItem.own_id === existingOrderItem.own_id
-                  );
+        await cartProduct.updateMany({
+          orderItems: item.orderItems,
+        });
 
-                  // If a corresponding item exists in the new orderItems, update it; otherwise, keep the existing item
-                  return newItem ? newItem : existingOrderItem;
-                }
-              );
+        // Update quantities in other users' carts
+        for (const [otherIndex, otherUserCart] of filteredCart.entries()) {
+          if (otherIndex !== index) {
+            const otherCartIndex = otherUserCart.orderItems.findIndex(
+              (product) => product.own_id === ownIds[index]
+            );
 
-              return { orderItems: updatedOrderItems };
-            },
+            if (otherCartIndex !== -1) {
+              otherUserCart.orderItems[otherCartIndex].quantity -= 1;
+
+              // Update the other user's cart
+              await cartProduct.updateMany({
+                orderItems: otherUserCart.orderItems,
+              });
+            }
           }
-        );
+        }
       }
 
       for (const [index, item] of filteredList.entries()) {
