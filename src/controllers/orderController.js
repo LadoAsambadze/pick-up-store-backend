@@ -56,18 +56,23 @@ export const makeOrder = async (req, res) => {
             })),
           },
           {
-            // Use $set to update the matching objects within the orderItems array
-            $set: {
-              "orderItems.$[elem]": item.orderItems.find((orderItem) => ({
-                "elem.own_id": orderItem.own_id,
-              })),
+            $set: (userCartProduct) => {
+              // Iterate over the user's existing orderItems
+              const updatedOrderItems = userCartProduct.orderItems.map(
+                (existingOrderItem) => {
+                  // Check if an item with the same own_id exists in the new orderItems
+                  const newItem = item.orderItems.find(
+                    (newOrderItem) =>
+                      newOrderItem.own_id === existingOrderItem.own_id
+                  );
+
+                  // If a corresponding item exists in the new orderItems, update it; otherwise, keep the existing item
+                  return newItem ? newItem : existingOrderItem;
+                }
+              );
+
+              return { orderItems: updatedOrderItems };
             },
-          },
-          {
-            // This option allows you to specify arrayFilters to filter the elements in the array
-            arrayFilters: item.orderItems.map((orderItem) => ({
-              "elem.own_id": orderItem.own_id,
-            })),
           }
         );
       }
