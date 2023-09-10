@@ -50,7 +50,7 @@ export const makeOrder = async (req, res) => {
           item.orderItems[cartIndex].amount = 1;
 
           await cartProduct.updateOne(
-            { user: item.user },
+            { user: newCart[index].user },
             { orderItems: item.orderItems }
           );
         }
