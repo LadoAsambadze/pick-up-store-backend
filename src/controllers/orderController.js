@@ -7,7 +7,7 @@ export const makeOrder = async (req, res) => {
   try {
     const cart = await cartProduct.findOne({ user });
     const allProducts = await productsData.find();
-    const newCart = await cartProduct.find();
+    const allCart = await cartProduct.find();
     const ownIds = cart.orderItems.map((item) => item.own_id);
     const purchaseIds = cart.orderItems.map((item) => item.purchase_id);
 
@@ -16,64 +16,34 @@ export const makeOrder = async (req, res) => {
         product.itemList.find((exact) => exact._id.toString() === item)
       )
     );
-    const filteredCart = purchaseIds.map((item) =>
-      newCart.find((product) =>
-        product.orderItems.find((exact) => exact.purchase_id === item)
-      )
-    );
 
-    let isValid = true;
-    let isEnough = true;
-    let allNonZero = true;
+    let isValid = true; // Declare isValid variable
 
-    for (const [index, item] of filteredCart.entries()) {
-      const cartIndex = item.orderItems.findIndex(
-        (product) => product.purchase_id === purchaseIds[index]
+    for (const [index, item] of filteredList.entries()) {
+      const listIndex = item.itemList.findIndex(
+        (product) => product._id.toString() === ownIds[index]
       );
 
-      if (item.orderItems[cartIndex].quantity <= 0) {
-        allNonZero = false;
+      const example = item.itemList[listIndex].size;
+      example[cart.orderItems[index].size] =
+        example[cart.orderItems[index].size] - cart.orderItems[index].amount;
+
+      if (example[cart.orderItems[index].size] < 0) {
+        isValid = false;
         break;
       }
+
+      await productsData.findOneAndUpdate(
+        { _id: item._id },
+        { itemList: item.itemList }
+      );
     }
 
-    if (allNonZero) {
-      for (const [item] of filteredCart.entries()) {
-        const cartItem = item.orderItems.map((product) =>
-          purchaseIds.includes(product.purchase_id)
-        );
-
-        console.log(cartItem);
-      }
-
-      for (const [index, item] of filteredList.entries()) {
-        const listIndex = item.itemList.findIndex(
-          (product) => product._id.toString() === ownIds[index]
-        );
-
-        const example = item.itemList[listIndex].size;
-        example[cart.orderItems[index].size] =
-          example[cart.orderItems[index].size] - cart.orderItems[index].amount;
-
-        if (example[cart.orderItems[index].size] < 0) {
-          isValid = false;
-          break;
-        }
-
-        await productsData.findOneAndUpdate(
-          { _id: item._id },
-          { itemList: item.itemList }
-        );
-      }
-    }
-
-    if (isValid && isEnough && allNonZero) {
+    if (isValid) {
       const order = new orderList({
         user,
-        orderItems: items.map((item) => ({
-          ...item,
-        })),
-        shippingDetails: shippingDetails,
+        items,
+        shippingDetails,
       });
 
       await order.save();
@@ -81,17 +51,15 @@ export const makeOrder = async (req, res) => {
       res
         .status(200)
         .json({ message: "Item added to cart successfully", order });
-    } else if (!isEnough || !allNonZero) {
+    } else {
       res.status(400).json({
         message: "Invalid order, not enough quantity, please update order",
       });
-    } else {
-      res.status(400).json({
-        message: "Invalid order, not enough amount, please update order",
-      });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
   }
 };
-
