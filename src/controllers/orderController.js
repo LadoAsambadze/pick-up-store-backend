@@ -47,16 +47,10 @@ export const makeOrder = async (req, res) => {
           item.orderItems[cartIndex].quantity -
           item.orderItems[cartIndex].amount;
         item.orderItems[cartIndex].amount = 1;
-        const cartItem = await cartProduct.find({
-          "orderItems.own_id": item.orderItems.own_id,
-        });
 
-        if (cartItem) {
-          await cartProduct.updateMany(
-            { "orderItems.own_id": item.orderItems.own_id },
-            { $set: { "orderItems.$": item.orderItems } }
-          );
-        }
+        await cartProduct.updateMany({
+          orderItems: item.orderItems[cartIndex].quantity,
+        });
       }
 
       for (const [index, item] of filteredList.entries()) {
