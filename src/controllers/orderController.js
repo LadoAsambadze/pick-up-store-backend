@@ -6,6 +6,11 @@ export const makeOrder = async (req, res) => {
   const { user, items, shippingDetails } = req.body;
   try {
     const cart = await cartProduct.findOne({ user });
+
+    if (!cart) {
+      throw new Error("Cart not found for user");
+    }
+
     const allProducts = await productsData.find();
     const newCart = await cartProduct.find();
     const ownIds = cart.orderItems.map((item) => item.own_id);
