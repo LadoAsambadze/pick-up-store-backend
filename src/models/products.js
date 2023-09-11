@@ -57,6 +57,9 @@ const products = new Schema(
     },
     itemList: [
       {
+        own_id: {
+          type: Schema.Types.String,
+        },
         _id: {
           type: Schema.Types.ObjectId,
         },

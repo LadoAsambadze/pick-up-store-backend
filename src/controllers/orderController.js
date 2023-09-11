@@ -7,18 +7,12 @@ export const makeOrder = async (req, res) => {
   try {
     const cart = await cartProduct.findOne({ user });
     const allProducts = await productsData.find();
-    const newCart = await cartProduct.find();
+
     const ownIds = cart.orderItems.map((item) => item.own_id);
-    const purchaseIds = cart.orderItems.map((item) => item.purchase_id);
 
     const filteredList = ownIds.map((item) =>
       allProducts.find((product) =>
-        product.itemList.find((exact) => exact._id.toString() === item)
-      )
-    );
-    const filteredCart = purchaseIds.map((item) =>
-      newCart.find((product) =>
-        product.orderItems.find((exact) => exact.purchase_id === item)
+        product.itemList.find((exact) => exact.own_id === item)
       )
     );
 
@@ -26,38 +20,10 @@ export const makeOrder = async (req, res) => {
     let isEnough = true;
     let allNonZero = true;
 
-    for (const [index, item] of filteredCart.entries()) {
-      const cartIndex = item.orderItems.findIndex(
-        (product) => product.purchase_id === purchaseIds[index]
-      );
-
-      if (cartIndex === -1) {
-        continue;
-      }
-
-      if (item.orderItems[cartIndex].quantity <= 0) {
-        allNonZero = false;
-        break;
-      }
-    }
-
     if (allNonZero) {
-      for (const [index, item] of filteredCart.entries()) {
-        const cartIndex = item.orderItems.findIndex(
-          (product) => product.purchase_id === purchaseIds[index]
-        );
-
-        item.orderItems[cartIndex].quantity =
-          item.orderItems[cartIndex].quantity -
-          item.orderItems[cartIndex].amount;
-        item.orderItems[cartIndex].amount = 1;
-
-        await cartProduct.updateMany({ orderItems: item.orderItems });
-      }
-
       for (const [index, item] of filteredList.entries()) {
         const listIndex = item.itemList.findIndex(
-          (product) => product._id.toString() === ownIds[index]
+          (product) => product.own_id === ownIds[index]
         );
 
         const example = item.itemList[listIndex].size;
