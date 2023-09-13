@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 import productRouter from "./routes/productRouter.js";
 import userRouter from "./routes/userRouter.js";
 import cartRouter from "./routes/cart.js";
-import { getOrders } from "./controllers/adminController.js";
+import { getOrders, sentOrders } from "./controllers/adminController.js";
 import orderRouter from "./routes/orderRouter.js";
 
 const app = express();
@@ -24,6 +24,7 @@ app.use("/user", userRouter);
 app.use("/order", cartRouter);
 app.use("/orderprocess", orderRouter);
 app.get("/getorders", getOrders);
+app.post("/sentorders", sentOrders);
 app.use("/", swaggerMiddleware());
 
 app.listen(process.env.PORT || 3000);
