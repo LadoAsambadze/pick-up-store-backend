@@ -11,21 +11,28 @@ export const getOrders = async (req, res) => {
 };
 
 export const sentOrders = async (req, res) => {
-  const { user, orderItems } = req.body;
+  try {
+    const { user, orderItems } = req.body;
 
-  const existingUser = await sentOrderList.findOne({ user });
+    const existingUser = await sentOrderList.findOne({ user });
 
-  if (!existingUser) {
-    const sentProduct = new sentOrderList({
-      user: user,
-      orderItems: orderItems,
-    });
+    if (!existingUser) {
+      const sentProduct = new sentOrderList({
+        user: user,
+        orderItems: orderItems,
+      });
 
-    await sentProduct.save();
-  } else {
-    await sentOrderList.updateOne(
-      { user },
-      { $push: { orderItems: { $each: orderItems } } }
-    );
+      await sentProduct.save();
+      res.status(201).json({ message: "New order created successfully." });
+    } else {
+      await sentOrderList.updateOne(
+        { user },
+        { $push: { orderItems: { $each: orderItems } } }
+      );
+      res.status(200).json({ message: "Order updated successfully." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error." });
   }
 };
