@@ -4,6 +4,7 @@ import { cartProduct } from "../models/cart.js";
 
 export const makeOrder = async (req, res) => {
   const { user, items, shippingDetails } = req.body;
+  console.log(items);
   try {
     const cart = await cartProduct.findOne({ user });
     const allProducts = await productsData.find();
@@ -43,13 +44,29 @@ export const makeOrder = async (req, res) => {
     }
 
     if (isValid && isEnough && allNonZero) {
-      const order = new orderList({
-        user,
-        orderItems: items.map((item) => ({
-          ...item,
-        })),
-        shippingDetails: shippingDetails,
-      });
+      let order = await orderList.findOne({ user });
+
+      if (!order) {
+        order = new orderList({
+          user,
+          orderItems: items.map((item) => ({
+            ...item,
+          })),
+          shippingDetails: shippingDetails,
+        });
+      } else {
+        items.forEach((newItem) => {
+          const existingItem = order.orderItems.find(
+            (item) => item.own_id === newItem.own_id
+          );
+
+          if (existingItem) {
+            existingItem.amount += newItem.amount;
+          } else {
+            order.orderItems.push(newItem);
+          }
+        });
+      }
 
       await order.save();
 
