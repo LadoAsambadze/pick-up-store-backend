@@ -13,6 +13,7 @@ export const getOrders = async (req, res) => {
 export const sentOrders = async (req, res) => {
   try {
     const { user, orderItems } = req.body;
+    console.log(orderItems);
 
     const existingUser = await sentOrderList.findOne({ user });
     const orderByUser = await orderList.findOne({ user });
@@ -32,7 +33,6 @@ export const sentOrders = async (req, res) => {
             oi.address === item.address &&
             oi.fullName === item.fullName
         );
-        console.log(item);
 
         if (existingItemIndex > -1) {
           existingUser.orderItems[existingItemIndex].amount += item.amount;
@@ -49,7 +49,12 @@ export const sentOrders = async (req, res) => {
 
     const updatedOrderItems = orderByUser.orderItems.filter((orderItem) => {
       return !orderItems.some(
-        (item) => item.purchase_id === orderItem.purchase_id
+        (item) =>
+          item.purchase_id === orderItem.purchase_id &&
+          item.fullName === orderItem.fullName &&
+          item.address === orderItem.address &&
+          item.city === orderItem.city &&
+          item.phoneNumber === orderItem.phoneNumber
       );
     });
 
