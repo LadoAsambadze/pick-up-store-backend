@@ -115,6 +115,9 @@ export const removeSentOrders = async (req, res) => {
       userDoc.orderItems.splice(itemIndex, 1);
       await userDoc.save();
     }
+    if (userDoc.orderItems.length === 0) {
+      await sentOrderList.deleteOne({ user });
+    }
 
     res.status(200).json({ message: "Item removed successfully" });
   } catch (error) {
