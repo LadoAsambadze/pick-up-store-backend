@@ -27,14 +27,16 @@ export const sentOrders = async (req, res) => {
     } else {
       for (let item of orderItems) {
         const existingItemIndex = existingUser.orderItems.findIndex(
-          (oi) => oi.purchase_id === item.purchase_id
+          (oi) =>
+            oi.purchase_id === item.purchase_id &&
+            oi.address === item.address &&
+            oi.fullName === item.fullName
         );
+        console.log(item);
 
         if (existingItemIndex > -1) {
-          // Update the amount if the item already exists
           existingUser.orderItems[existingItemIndex].amount += item.amount;
         } else {
-          // Add the item if it does not exist
           existingUser.orderItems.push(item);
         }
       }
@@ -71,6 +73,7 @@ export const sentOrders = async (req, res) => {
 
 export const getSentOrders = async (req, res) => {
   const orders = await sentOrderList.find();
+
   try {
     res.status(200).json({ menssage: "Succesfuly fetched", orders });
   } catch (error) {

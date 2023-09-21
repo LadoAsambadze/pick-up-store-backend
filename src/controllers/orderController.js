@@ -3,8 +3,8 @@ import { productsData } from "../models/products.js";
 import { cartProduct } from "../models/cart.js";
 
 export const makeOrder = async (req, res) => {
-  const { user, items, shippingDetails } = req.body;
-  console.log(items);
+  const { user, items } = req.body;
+
   try {
     const cart = await cartProduct.findOne({ user });
     const allProducts = await productsData.find();
@@ -52,12 +52,16 @@ export const makeOrder = async (req, res) => {
           orderItems: items.map((item) => ({
             ...item,
           })),
-          shippingDetails: shippingDetails,
         });
       } else {
         items.forEach((newItem) => {
           const existingItem = order.orderItems.find(
-            (item) => item.own_id === newItem.own_id
+            (item) =>
+              item.own_id === newItem.own_id &&
+              item.fullName == newItem.fullName &&
+              item.address === newItem.address &&
+              item.phoneNumber === newItem.phoneNumber &&
+              item.city === newItem.city
           );
 
           if (existingItem) {

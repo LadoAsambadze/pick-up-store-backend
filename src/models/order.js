@@ -43,22 +43,20 @@ const order = new Schema(
         own_id: {
           type: Schema.Types.String,
         },
+        fullName: {
+          type: Schema.Types.String,
+        },
+        city: {
+          type: Schema.Types.String,
+        },
+        address: {
+          type: Schema.Types.String,
+        },
+        phoneNumber: {
+          type: Schema.Types.String,
+        },
       },
     ],
-    shippingDetails: {
-      fullName: {
-        type: Schema.Types.String,
-      },
-      city: {
-        type: Schema.Types.String,
-      },
-      address: {
-        type: Schema.Types.String,
-      },
-      phoneNumber: {
-        type: Schema.Types.String,
-      },
-    },
   },
   { timestamps: true }
 );
