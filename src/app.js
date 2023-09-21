@@ -12,6 +12,7 @@ import cartRouter from "./routes/cart.js";
 import {
   getOrders,
   getSentOrders,
+  removeSentOrders,
   sentOrders,
 } from "./controllers/adminController.js";
 import orderRouter from "./routes/orderRouter.js";
@@ -30,6 +31,7 @@ app.use("/orderprocess", orderRouter);
 app.get("/getorders", getOrders);
 app.post("/sentorders", sentOrders);
 app.get("/getsentorders", getSentOrders);
+app.delete("/removesentorders", removeSentOrders);
 app.use("/", swaggerMiddleware());
 
 app.listen(process.env.PORT || 3000);
