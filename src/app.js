@@ -14,6 +14,7 @@ import {
   getSentOrders,
   removeSentOrders,
   sentOrders,
+  uploadProduct,
 } from "./controllers/adminController.js";
 import orderRouter from "./routes/orderRouter.js";
 
@@ -32,6 +33,7 @@ app.get("/getorders", getOrders);
 app.post("/sentorders", sentOrders);
 app.get("/getsentorders", getSentOrders);
 app.delete("/removesentorders", removeSentOrders);
+app.post("/uploadproduct", uploadProduct);
 app.use("/", swaggerMiddleware());
 
 app.listen(process.env.PORT || 3000);

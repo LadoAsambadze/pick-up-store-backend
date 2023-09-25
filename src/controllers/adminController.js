@@ -1,4 +1,5 @@
 import { orderList } from "../models/order.js";
+import { productsData } from "../models/products.js";
 import { sentOrderList } from "../models/sentOrders.js";
 
 export const getOrders = async (req, res) => {
@@ -123,5 +124,24 @@ export const removeSentOrders = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const uploadProduct = async (req, res) => {
+  const { product } = req.body;
+  console.log(product);
+
+  const newProduct = new productsData(product);
+
+  try {
+    await newProduct.save();
+
+    res
+      .status(201)
+      .json({ message: "Product uploaded successfully!", product: newProduct });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to upload product.", error: error.toString() });
   }
 };

@@ -3,12 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 
 export const addCart = async (req, res) => {
   const { user, orderItems } = req.body;
-
   try {
     const existingUser = await cartProduct.findOne({
       user,
     });
-
     if (!existingUser) {
       const cartItem = new cartProduct({
         user,
@@ -18,7 +16,7 @@ export const addCart = async (req, res) => {
         })),
       });
       await cartItem.save();
-      res
+      return res
         .status(200)
         .json({ message: "Item added to cart successfully", cartItem });
     } else {
@@ -31,7 +29,6 @@ export const addCart = async (req, res) => {
             existingItem.color === item.color &&
             existingItem.name == item.name
         );
-
         if (isPresent) {
           itemExists = true;
         } else {
@@ -39,16 +36,16 @@ export const addCart = async (req, res) => {
         }
       });
       if (itemExists) {
-        res.status(200).json({ message: "Item exists" });
+        return res.status(201).json({ message: "Item exists in the cart" });
       } else {
         await existingUser.save();
-        res
+        return res
           .status(200)
           .json({ message: "Item added to cart successfully", existingUser });
       }
     }
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ message: "Failed to add item to cart", error: error.message });
   }
@@ -68,7 +65,6 @@ export const updateCart = async (req, res) => {
     const { purchase_id } = req.params;
     const { new_amount, user_id } = req.body;
     const cart = await cartProduct.findOne({ user: user_id });
-    
 
     if (!cart) {
       res.status(404).json({ message: "Cart not found" });
@@ -80,8 +76,7 @@ export const updateCart = async (req, res) => {
         res.status(404).json({ message: "Item not found" });
       } else {
         item.amount = new_amount;
-        
-       
+
         await cart.save();
         res
           .status(200)

@@ -57,6 +57,7 @@ export const makeOrder = async (req, res) => {
         items.forEach((newItem) => {
           const existingItem = order.orderItems.find(
             (item) =>
+              item.purchase_id === newItem.purchase_id &&
               item.own_id === newItem.own_id &&
               item.fullName == newItem.fullName &&
               item.address === newItem.address &&
