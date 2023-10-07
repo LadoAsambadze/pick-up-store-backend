@@ -17,6 +17,7 @@ import {
   uploadProduct,
 } from "./controllers/adminController.js";
 import orderRouter from "./routes/orderRouter.js";
+import imageRouter from "./routes/imageRouter.js";
 
 const app = express();
 dotenv.config();
@@ -33,7 +34,7 @@ app.get("/getorders", getOrders);
 app.post("/sentorders", sentOrders);
 app.get("/getsentorders", getSentOrders);
 app.delete("/removesentorders", removeSentOrders);
-app.post("/uploadproduct", uploadProduct);
+app.use("/uploadproduct", imageRouter);
 app.use("/", swaggerMiddleware());
 
 app.listen(process.env.PORT || 3000);

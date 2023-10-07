@@ -51,7 +51,7 @@ paths:
             type: string
       responses:
         "200":
-          description: The product was successfully deleted from the cart.
+          description: The product was successfully deleted from the cart
 
   /makeOrder:
     post:
@@ -90,3 +90,22 @@ paths:
                     example: Post failed.
                   error:
                     type: object
+
+  /uploadproduct:
+    post:
+      summary: "Upload Product with Images"
+      consumes:
+        - "multipart/form-data"
+      parameters:
+        - in: formData
+          name: photo
+          type: file
+          required: true
+          description: "Product images (PNG, JPG, JPEG)"
+      responses:
+        "200":
+          description: "Product uploaded successfully"
+        "400":
+          description: "Invalid request format or image type"
+        "500":
+          description: "Internal server error"

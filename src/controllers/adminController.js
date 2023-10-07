@@ -106,8 +106,6 @@ export const removeSentOrders = async (req, res) => {
         orderItem.city === item.city
       );
     });
-    console.log(itemIndex);
-
     if (itemIndex === -1) {
       return res
         .status(404)
@@ -126,20 +124,17 @@ export const removeSentOrders = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 export const uploadProduct = async (req, res) => {
-  const { product } = req.body;
-  console.log(product);
-
-  const newProduct = new productsData(product);
+  const productData = JSON.parse(req.body.productData);
+  const newProduct = new productsData(productData);
 
   try {
     await newProduct.save();
-
     res
       .status(201)
       .json({ message: "Product uploaded successfully!", product: newProduct });
   } catch (error) {
+    console.error(error);
     res
       .status(500)
       .json({ message: "Failed to upload product.", error: error.toString() });

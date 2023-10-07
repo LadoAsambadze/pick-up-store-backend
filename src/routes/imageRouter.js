@@ -25,8 +25,8 @@ const fileFilter = (req, file, cb) => {
 };
 
 imageRouter.post(
-  "/uploadproduct",
-  multer({ storage: fileStorage, fileFilter }).single("image"),
+  "/",
+  multer({ storage: fileStorage, fileFilter }).array("photo"),
   uploadProduct
 );
 
