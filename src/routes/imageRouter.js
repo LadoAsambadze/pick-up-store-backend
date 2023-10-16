@@ -1,6 +1,7 @@
 import express from "express";
 import { uploadProduct } from "../controllers/adminController.js";
 import multer from "multer";
+import AdminMiddleware from "../middlewares/admin-middleware.js";
 const imageRouter = express.Router();
 
 const fileStorage = multer.diskStorage({
@@ -26,6 +27,7 @@ const fileFilter = (req, file, cb) => {
 
 imageRouter.post(
   "/",
+  AdminMiddleware,
   multer({ storage: fileStorage, fileFilter }).array("photo"),
   uploadProduct
 );
