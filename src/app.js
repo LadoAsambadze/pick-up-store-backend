@@ -19,6 +19,9 @@ import {
 import orderRouter from "./routes/orderRouter.js";
 import imageRouter from "./routes/imageRouter.js";
 
+import adminRouter from "./routes/adminRouter.js";
+
+
 const app = express();
 dotenv.config();
 connect();
@@ -30,10 +33,7 @@ app.use("/api", productRouter);
 app.use("/user", userRouter);
 app.use("/order", cartRouter);
 app.use("/orderprocess", orderRouter);
-app.get("/getorders", getOrders);
-app.post("/sentorders", sentOrders);
-app.get("/getsentorders", getSentOrders);
-app.delete("/removesentorders", removeSentOrders);
+app.use("/admin",  adminRouter);
 app.use("/uploadproduct", imageRouter);
 app.use("/", swaggerMiddleware());
 

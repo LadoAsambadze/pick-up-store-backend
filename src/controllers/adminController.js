@@ -127,12 +127,34 @@ export const removeSentOrders = async (req, res) => {
 export const uploadProduct = async (req, res) => {
   const productData = JSON.parse(req.body.productData);
   const newProduct = new productsData(productData);
+  const exsistItem = await productsData.findOne({ name: productData.name });
 
   try {
-    await newProduct.save();
-    res
-      .status(201)
-      .json({ message: "Product uploaded successfully!", product: newProduct });
+    if (exsistItem) {
+      // If product with same name exists, check for same color
+      const sameColorItem = exsistItem.itemList.find(
+        (item) => item.color === productData.itemList[0].color
+      );
+      if (sameColorItem) {
+        res.status(400).json({
+          message: "Item with same name and color already exists!",
+          product: exsistItem,
+        });
+      } else {
+        exsistItem.itemList.push(productData.itemList[0]);
+        await exsistItem.save();
+        res.status(200).json({
+          message: "Product updated successfully!",
+          product: exsistItem,
+        });
+      }
+    } else {
+      await newProduct.save();
+      res.status(201).json({
+        message: "Product uploaded successfully!",
+        product: newProduct,
+      });
+    }
   } catch (error) {
     console.error(error);
     res
