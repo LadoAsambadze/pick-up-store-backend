@@ -5,7 +5,7 @@ const authMiddleware = (req, res, next) => {
 
   if (authorization) {
     const token = authorization.trim().split(" ")[1];
-    jwt.verify(token, process.env.SECRET, {}, (error, useData) => {
+    jwt.verify(token, process.env.SECRET, {}, (error) => {
       if (error) {
         res.status(403).json("Unauthorized - Please log in");
       } else {

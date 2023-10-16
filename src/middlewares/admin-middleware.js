@@ -3,13 +3,14 @@ import userModel from "../models/user.js";
 
 const AdminMiddleware = (req, res, next) => {
   const { authorization } = req.headers;
+
   if (authorization) {
     const token = authorization.trim().split(" ")[1];
-    jwt.verify(token, process.env.SECRET, {}, async (error, userData) => {
+    jwt.verify(token, process.env.SECRET, {}, async (error, useData) => {
       if (error) {
         res.status(403).json("Unauthorized - Please log in");
       } else {
-        const user = await userModel.findById(userData.email);
+        const user = await userModel.findById(useData.id);
         if (user && user.isAdmin) {
           next();
         } else {

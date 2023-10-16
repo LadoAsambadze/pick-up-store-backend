@@ -15,7 +15,7 @@ export const Login = async (req, res) => {
             {
               user: user.email,
               id: user._id,
-            
+              isAdmin: user.isAdmin,
             },
             process.env.SECRET
           );
@@ -74,4 +74,3 @@ export const Profile = async (req, res) => {
     res.status(403).json("No token!");
   }
 };
-

@@ -20,7 +20,7 @@ import orderRouter from "./routes/orderRouter.js";
 import imageRouter from "./routes/imageRouter.js";
 
 import adminRouter from "./routes/adminRouter.js";
-
+import AdminMiddleware from "./middlewares/admin-middleware.js";
 
 const app = express();
 dotenv.config();
@@ -33,8 +33,8 @@ app.use("/api", productRouter);
 app.use("/user", userRouter);
 app.use("/order", cartRouter);
 app.use("/orderprocess", orderRouter);
-app.use("/admin",  adminRouter);
-app.use("/uploadproduct", imageRouter);
+app.use("/admin", adminRouter);
+app.use("/uploadproduct", AdminMiddleware, imageRouter);
 app.use("/", swaggerMiddleware());
 
 app.listen(process.env.PORT || 3000);
