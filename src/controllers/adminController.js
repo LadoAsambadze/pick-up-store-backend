@@ -131,11 +131,18 @@ export const uploadProduct = async (req, res) => {
 
   try {
     if (exsistItem) {
-      // If product with same name exists, check for same color
       const sameColorItem = exsistItem.itemList.find(
         (item) => item.color === productData.itemList[0].color
       );
+      const differentBrand = exsistItem.find(
+        (item) => item.brand === productData.brand
+      );
+      const differentPrice = exsistItem.find(
+        (item) => item.price == productData.price
+      );
+
       if (sameColorItem) {
+    
         res.status(400).json({
           message: "Item with same name and color already exists!",
           product: exsistItem,
@@ -144,7 +151,7 @@ export const uploadProduct = async (req, res) => {
         exsistItem.itemList.push(productData.itemList[0]);
         await exsistItem.save();
         res.status(200).json({
-          message: "Product updated successfully!",
+          message: "New Color For Product added successfully!",
           product: exsistItem,
         });
       }
