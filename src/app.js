@@ -34,7 +34,7 @@ app.use("/user", userRouter);
 app.use("/order", cartRouter);
 app.use("/orderprocess", orderRouter);
 app.use("/admin", adminRouter);
-app.use("/uploadproduct",  imageRouter);
+app.use("/uploadproduct", imageRouter);
 app.use("/", swaggerMiddleware());
 
 app.listen(process.env.PORT || 3000);

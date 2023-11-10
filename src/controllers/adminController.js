@@ -128,6 +128,7 @@ export const uploadProduct = async (req, res) => {
   const productData = JSON.parse(req.body.productData);
   const newProduct = new productsData(productData);
   const exsistItem = await productsData.findOne({ name: productData.name });
+  console.log(productData.itemList[0]);
 
   try {
     if (exsistItem) {
@@ -142,7 +143,6 @@ export const uploadProduct = async (req, res) => {
       );
 
       if (sameColorItem) {
-    
         res.status(400).json({
           message: "Item with same name and color already exists!",
           product: exsistItem,
