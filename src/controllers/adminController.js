@@ -128,18 +128,11 @@ export const uploadProduct = async (req, res) => {
   const productData = JSON.parse(req.body.productData);
   const newProduct = new productsData(productData);
   const exsistItem = await productsData.findOne({ name: productData.name });
-  console.log(productData.itemList[0]);
 
   try {
     if (exsistItem) {
       const sameColorItem = exsistItem.itemList.find(
         (item) => item.color === productData.itemList[0].color
-      );
-      const differentBrand = exsistItem.find(
-        (item) => item.brand === productData.brand
-      );
-      const differentPrice = exsistItem.find(
-        (item) => item.price == productData.price
       );
 
       if (sameColorItem) {
